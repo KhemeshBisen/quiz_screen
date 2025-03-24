@@ -11,7 +11,7 @@ class StartScreen extends StatelessWidget {
   Widget build(context) {
     return Center(
         child: Column(
-      mainAxisSize: MainAxisSize.max,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Image.asset(
           'images/download-_2_.jpeg',

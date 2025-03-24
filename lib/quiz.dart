@@ -5,62 +5,55 @@ import 'package:quiz_screen/start_screen.dart';
 import 'package:quiz_screen/results_screen.dart';
 
 class Quiz extends StatefulWidget {
-  const Quiz({super.key});
-
   @override
-  State<Quiz> createState() {
-    return _QuizState();
-  }
+  State<Quiz> createState() => _QuizAppState();
 }
 
-class _QuizState extends State<Quiz> {
-  List<String> selectedAnswer = [];
-  var activeScreen = 'start-screen';
+class _QuizAppState extends State<Quiz> {
+  List<String> _chosenAnswers = [];
+  String _activeScreen = 'start-screen';
 
-  void switchScreen() {
+  void _switchToQuizScreen() {
     setState(() {
-      activeScreen = 'question-screen';
+      _activeScreen = 'question-screen';
     });
   }
 
-  void chooseAnswer(String answer) {
-    selectedAnswer.add(answer);
+  void _chooseAnswer(String answer) {
+    setState(() {
+      _chosenAnswers.add(answer);
+      if (_chosenAnswers.length == question.length) {
+        _activeScreen = 'results-screen';
+      }
+    });
+  }
 
-    if (selectedAnswer.length == question.length) {
-      setState(() {
-        selectedAnswer = [];
-        activeScreen = 'srart-screen';
-      });
-    }
+  void _restartQuiz() {
+    setState(() {
+      _chosenAnswers = [];
+      _activeScreen = 'start-screen';
+    });
   }
 
   @override
-  Widget build(context) {
-    Widget screenWidget = StartScreen(switchScreen);
+  Widget build(BuildContext context) {
+    Widget screenWidget;
 
-    if (activeScreen == 'question-screen') {
-      screenWidget = QuestionScreen(
-        onSelectAnswer: chooseAnswer,
-      );
-    }
-
-    if (activeScreen == 'results_screen') {
+    if (_activeScreen == 'start-screen') {
+      screenWidget = StartScreen(_switchToQuizScreen);
+    } else if (_activeScreen == 'question-screen') {
+      screenWidget = QuestionScreen(onSelectAnswer: _chooseAnswer);
+    } else {
       screenWidget = ResultsScreen(
-        chosenAnswer: selectedAnswer,
-        onRestart: () {},
+        chosenAnswer: _chosenAnswers,
+        onRestart: _restartQuiz, // Pass the restart function
       );
     }
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
-        body: Container(
-          decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [Color(0x8cd50f0f), Colors.transparent],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight)),
-          child: screenWidget,
-        ),
+        body: screenWidget,
       ),
     );
   }

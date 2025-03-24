@@ -41,7 +41,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
             Text(
               currentQuestion.text,
               style: const TextStyle(
-                color: Colors.white,
+                color: Color.fromARGB(255, 15, 1, 1),
               ),
               textAlign: TextAlign.center,
             ),
